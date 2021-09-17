@@ -1,22 +1,21 @@
-import siteMetadata from '@/data/siteMetadata'
-import projectsData from '@/data/projectsData'
-import Card from '@/components/Card'
-import { PageSEO } from '@/components/SEO'
+import { MDXLayoutRenderer } from '@/components/MDXComponents'
+import { getFileBySlug } from '@/lib/mdx'
 
-export default function Resume() {
+const DEFAULT_LAYOUT = 'ResumeLayout'
+
+export async function getStaticProps() {
+  const resumeDetails = await getFileBySlug('resume', ['default'])
+  return { props: { resumeDetails } }
+}
+
+export default function Resume({ resumeDetails }) {
+  const { mdxSource, frontMatter } = resumeDetails
+
   return (
-    <>
-      <PageSEO title={`Resume - ${siteMetadata.author}`} description={siteMetadata.description} />
-      <div className="divide-y divide-gray-200 dark:divide-gray-700">
-        <div className="pt-6 pb-8 space-y-2 md:space-y-5">
-          <h1 className="text-3xl font-extrabold leading-9 tracking-tight text-gray-900 dark:text-gray-100 sm:text-4xl sm:leading-10 md:text-6xl md:leading-14">
-            Resume
-          </h1>
-        </div>
-        <div className="container py-12">
-          <div className="flex flex-wrap -m-4">resume here</div>
-        </div>
-      </div>
-    </>
+    <MDXLayoutRenderer
+      layout={frontMatter.layout || DEFAULT_LAYOUT}
+      mdxSource={mdxSource}
+      frontMatter={frontMatter}
+    />
   )
 }
